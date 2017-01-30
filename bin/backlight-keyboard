@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -eu
+
+controlfile="/sys/class/leds/smc::kbd_backlight/brightness"
+
+case $1 in
+  "+")
+    value="$(($(cat $controlfile) + $2))"
+    ;;
+  "-")
+    value="$(($(cat $controlfile) - $2))"
+    ;;
+  "=")
+    value=$2
+    ;;
+esac
+
+if [[ $value -lt 0 ]]; then
+  value=0
+fi
+
+sudo sh -c "echo $value > $controlfile"

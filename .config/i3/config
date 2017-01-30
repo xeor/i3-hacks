@@ -1,0 +1,165 @@
+# http://i3wm.org/docs/userguide.html for a complete reference!
+
+set $alt Mod1
+set $rightSuper Mod3
+set $leftSuper Mod4
+
+# Font for window titles. Will also be used by the bar unless a different font is used in the bar {} block below.
+font pango:Dejavu Sans Mono 12
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #4c7899 #285577 #ffffff #2e9ef4   #666666
+client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f272a
+client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+client.urgent           #2f343a #900000 #ffffff #900000   #900000
+client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+client.background       #ffffff
+
+# Use Mouse+$leftSuper to drag floating windows to their wanted position
+floating_modifier $leftSuper
+
+bindsym $leftSuper+Shift+space floating toggle
+
+# start a terminal
+# bindsym $leftSuper+Return exec i3-sensible-terminal
+bindsym $leftSuper+Return exec urxvt # gnome-terminal
+
+# kill focused window
+bindsym $leftSuper+Shift+q kill
+
+bindsym $leftSuper+d exec "rofi -modi window,run -show drun"
+bindsym $leftSuper+Tab exec rofi -show window
+
+bindsym $leftSuper+l exec "i3lock -c 000000 -f"
+
+bindsym $leftSuper+Left focus left
+bindsym $leftSuper+Down focus down
+bindsym $leftSuper+Up focus up
+bindsym $leftSuper+Right focus right
+
+bindsym $leftSuper+Shift+Left move left
+bindsym $leftSuper+Shift+Down move down
+bindsym $leftSuper+Shift+Up move up
+bindsym $leftSuper+Shift+Right move right
+
+# split next in orientation
+# bindsym $leftSuper+h split h
+# bindsym $leftSuper+v split v
+bindsym $leftSuper+apostrophe split toggle
+
+bindsym $leftSuper+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $leftSuper+s layout stacking
+bindsym $leftSuper+w layout tabbed
+bindsym $leftSuper+e layout toggle split
+
+# focus the parent container
+bindsym $leftSuper+a focus parent
+bindsym $leftSuper+z focus child
+
+# switch to workspace
+bindsym $leftSuper+1 workspace 1; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+2 workspace 2; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+3 workspace 3; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+4 workspace 4; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+5 workspace 5; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+6 workspace 6; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+7 workspace 7; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+8 workspace 8; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+9 workspace 9; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+
+# move focused container to workspace
+bindsym $leftSuper+Shift+1 move container to workspace 1
+bindsym $leftSuper+Shift+2 move container to workspace 2
+bindsym $leftSuper+Shift+3 move container to workspace 3
+bindsym $leftSuper+Shift+4 move container to workspace 4
+bindsym $leftSuper+Shift+5 move container to workspace 5
+bindsym $leftSuper+Shift+6 move container to workspace 6
+bindsym $leftSuper+Shift+7 move container to workspace 7
+bindsym $leftSuper+Shift+8 move container to workspace 8
+bindsym $leftSuper+Shift+9 move container to workspace 9
+
+
+# switch to prev/next workspace on current output
+bindsym $leftSuper+$alt+Right workspace next_on_output; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+$alt+Left workspace prev_on_output; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+bindsym $leftSuper+$alt+Shift+Right move workspace next_on_output; workspace next_on_output;
+bindsym $leftSuper+$alt+Shift+Left move workspace prev_on_output; workspace prev_ou_output;
+#
+bindsym $leftSuper+Shift+r restart
+
+
+bindsym XF86MonBrightnessUp exec "${HOME}/bin/backlight + 10"
+bindsym XF86MonBrightnessDown exec "${HOME}/bin/backlight - 10"
+
+bindsym XF86KbdBrightnessUp exec "${HOME}/bin/backlight-keyboard + 10"
+bindsym XF86KbdBrightnessDown exec "${HOME}/bin/backlight-keyboard - 10"
+
+bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
+bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
+bindsym XF85AudioMute exec amixer set Master toggle && amixer set Headphone toggle
+
+# Remapping caps-lock to XF86RotateWindows in .Xmodmap
+bindsym XF86RotateWindows workspace back_and_forth
+
+# Resize
+bindsym $leftSuper+r mode "resize"
+mode "resize" {
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Up resize grow height 10 px or 10 ppt
+        bindsym Down resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        bindsym Shift+Left resize shrink width 2 px or 2 ppt
+        bindsym Shift+Up resize grow height 2 px or 2 ppt
+        bindsym Shift+Down resize shrink height 2 px or 2 ppt
+        bindsym Shift+Right resize grow width 2 px or 2 ppt
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $leftSuper+Control+Left resize shrink width 10 px or 10 ppt
+bindsym $leftSuper+Control+Up resize grow height 10 px or 10 ppt
+bindsym $leftSuper+Control+Down resize shrink height 10 px or 10 ppt
+bindsym $leftSuper+Control+Right resize grow width 10 px or 10 ppt
+
+
+# always on top
+bindsym $leftSuper+Shift+minus mark aot; floating enable;
+bindsym $leftSuper+minus unmark aot; floating disable;
+
+# switch to previous workspace
+bindsym $leftSuper+p workspace back_and_forth; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
+
+
+# Dedicated rightSuper to switch between windows
+bindsym $rightSuper+b exec ~/bin/i3-focus_or_start browser "chromium --user-data-dir=${HOME}/.config/chromium-main" instance "chromium \(.*/.config/chromium-main\)"
+
+
+for_window [title="Copying"] floating enable
+for_window [title="Deleting"] floating enable
+for_window [title="Moving"] floating enable
+
+bindsym $leftSuper+period move scratchpad
+bindsym $leftSuper+shift+period scratchpad show
+
+#Marks
+bindsym $leftSuper+m exec bash -c '~/bin/i3-get_marks_options.py | rofi -dmenu -p "Jump to mark: " | ~/bin/i3-jump_to_mark.sh'
+bindsym $leftSuper+Shift+m exec bash -c 'echo -n "" | rofi -dmenu -p "Mark window: " | ~/bin/i3-mark_window.sh'
+
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+  position top
+  tray_output none
+  workspace_buttons no
+  status_command i3status
+}
+
+bar {
+  binding_mode_indicator no
+}

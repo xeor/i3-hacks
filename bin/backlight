@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# needed?
+# setpci -v -H1 -s 00:01.00 BRIDGE_CONTROL=0
+
+set -eu
+
+controlfile="/sys/class/backlight/gmux_backlight/brightness"
+
+case $1 in
+  "+")
+    value="$(($(cat $controlfile) + $2))"
+    ;;
+  "-")
+    value="$(($(cat $controlfile) - $2))"
+    ;;
+  "=")
+    value=$2
+    ;;
+esac
+
+if [[ $value -le 5 ]]; then
+  value=3
+fi
+
+sudo sh -c "echo $value > $controlfile"
