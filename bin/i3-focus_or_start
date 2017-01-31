@@ -2,23 +2,66 @@
 
 # Usefull info @ https://faq.i3wm.org/question/2473/run-or-focus-in-i3.1.html
 
+# The whole point of this script is to focus if exist, else start applications inside i3 and it's workspaces.
+
+# Examples usage in your i3 config
+#
+#  * Bind a main browser window to a dedicated workspace called "browser".
+#    Find the browser using it's instance (that contains the --user-data-dir start paramter)
+#      > bindsym $rightSuper+b exec ~/bin/i3-focus_or_start browser "chromium --user-data-dir=${HOME}/.config/chromium-main" instance "chromium \(.*/.config/chromium-main\)"
+#
+#  * Do the same for a dedicated browser profile dir for social stuff. Chat and so on..
+#      > bindsym $rightSuper+s exec ~/bin/i3-focus_or_start social "chromium --user-data-dir=${HOME}/.config/chromium-social" instance "chromium \(.*/.config/chromium-social\)"
+#
+#  * Fire up atom inside the /data/notes directory, then use that information to find it again using instance-cwd.
+#    Instance-cmd takes a 2nd parameter that is "which directory should my process cwd be". We also uses the instance name of "atom"
+#    to find processes to check for this cwd.
+#    Note that this trick doesnt work on "atom" as in this example, since the atom windows shares pid.
+#      >  bindsym $rightSuper+a exec ~/bin/i3-focus_or_start editor "cd /data/notes; atom" instance-cwd "atom" "/data/notes"
+#
+#  * Find the window that belongs to the workspace name (editor). If not found, start it in that workspace. If it does, show it.
+#    This works very well as a last resort, example for atom.
+#      > bindsym $rightSuper+a exec ~/bin/i3-focus_or_start editor "atom" instance-workspace "atom"
+
+
 set -eu
 
 workspace_name="${1}"
 execute_cmd="${2}"
 search_type="${3}"
-search_query="${4}"  # This is a regex, so remember to escape proper
+search_query="${4:-}"  # This is a regex, so remember to escape proper
+search_query_param="${5:-}"  # Optional parameter to find the window.
 
-get_window() {
-  case ${1} in
+get_window_id() {
+  case ${search_type} in
     instance)
-      echo $(xdotool search --classname "${2}" | head -1)
+      echo $(xdotool search --classname "${search_query}" | head -1)
       ;;
     class)
-      echo $(xdotool search --class "${2}" | head -1)
+      echo $(xdotool search --class "${search_query}" | head -1)
       ;;
     title)
-      echo $(xdotool search --name "${2}" | head -1)
+      echo $(xdotool search --name "${search_query}" | head -1)
+      ;;
+    instance-cwd)
+      for window_id in $(xdotool search --classname "${search_query}"); do
+	      pid=$(xdotool getwindowpid ${window_id})
+	      if [[ "$(readlink /proc/${pid}/cwd)" == "${search_query_param}" ]]; then
+	        echo "${window_id}"
+        fi
+      done | tail -n 1
+      ;;
+    instance-workspace)
+      # http://stackoverflow.com/questions/41958475/getting-the-object-array-index-in-jq
+      wanted_desktop_id=$(i3-msg -t get_workspaces | jq --arg workspace "${workspace_name}" 'map(.name == $workspace) | index(true)')
+
+      [[ "${wanted_desktop_id}" == "null" ]] && return
+      for window_id in $(xdotool search --classname "${search_query}"); do
+        desktop_id="$(xdotool get_desktop_for_window ${window_id})"
+          if [[ "${desktop_id}" == "${wanted_desktop_id}" ]]; then
+            echo "${window_id}"
+          fi
+      done | tail -1
       ;;
     *)
       exit 1
@@ -26,18 +69,10 @@ get_window() {
   esac
 }
 
-execute() {
-  i3-msg "workspace ${1}; exec ${2};"
-}
+window_id=$(get_window_id)
 
-focus() {
-  i3-msg "[$1=$(echo $2 | sed s/\\x20/\\\\x20/g)] focus"
-}
-
-window=$(get_window "${search_type}" "${search_query}")
-
-if [[ -z "${window}" ]]; then
-  execute "${workspace_name}" "${execute_cmd}"
+if [[ -z "${window_id}" ]]; then
+  i3-msg "workspace ${workspace_name}; exec ${execute_cmd};"
 else
-  focus "${search_type}" "${search_query}"
+  i3-msg "[id=$(echo ${window_id})] focus"  # "id" is x11 window id, not i3 window id
 fi

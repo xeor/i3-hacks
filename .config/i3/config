@@ -135,9 +135,13 @@ bindsym $leftSuper+minus unmark aot; floating disable;
 bindsym $leftSuper+p workspace back_and_forth; [con_mark="aot"] move workspace current; [con_mark="aot"] focus tiling;
 
 
-# Dedicated rightSuper to switch between windows
+# Dedicated (mostly) rightSuper to switch between windows
+bindsym $rightSuper+shift+b exec chromium
 bindsym $rightSuper+b exec ~/bin/i3-focus_or_start browser "chromium --user-data-dir=${HOME}/.config/chromium-main" instance "chromium \(.*/.config/chromium-main\)"
+bindsym $rightSuper+s exec ~/bin/i3-focus_or_start social "chromium --user-data-dir=${HOME}/.config/chromium-social" instance "chromium \(.*/.config/chromium-social\)"
 
+# bindsym $rightSuper+a exec ~/bin/i3-focus_or_start editor "cd /data/notes; atom" instance-cwd "atom" "/data/notes"
+bindsym $rightSuper+a exec ~/bin/i3-focus_or_start editor "atom" instance-workspace "atom"
 
 for_window [title="Copying"] floating enable
 for_window [title="Deleting"] floating enable
