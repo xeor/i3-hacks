@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# needed?
+# Make sure you have ran this in on system startup (at least on macbook pro 2015)
 # setpci -v -H1 -s 00:01.00 BRIDGE_CONTROL=0
 
 set -eu
