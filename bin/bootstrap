@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+if [[ "$(uname)" == "Linux" ]]; then
+  . /home/xeor/bin/bootstrap_files/arch-macbookpro-i3
+fi
+
