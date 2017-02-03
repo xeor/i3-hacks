@@ -7,6 +7,8 @@ set -eu
 
 controlfile="/sys/class/backlight/gmux_backlight/brightness"
 
+max_brightness=1023  # Tried setting max and looked at /sys/class/backlight/gmux_backlight/actual_brightness
+
 case $1 in
   "+")
     value="$(($(cat $controlfile) + $2))"
@@ -17,10 +19,15 @@ case $1 in
   "=")
     value=$2
     ;;
+  "?")
+    current=$(cat $controlfile)
+    # http://stackoverflow.com/questions/24284460/calculating-rounded-percentage-in-shell-script-without-using-bc
+    echo $((200*${current}/${max_brightness} % 2 + 100*${current}/${max_brightness}))
+    exit 0
+    ;;
 esac
 
-if [[ $value -le 5 ]]; then
-  value=3
-fi
+[[ ${value} -le 5 ]] && value=3
+[[ ${value} -gt ${max_brightness} ]] && value=${max_brightness}
 
 sudo sh -c "echo $value > $controlfile"
