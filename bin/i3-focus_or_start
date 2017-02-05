@@ -72,7 +72,22 @@ get_window_id() {
 window_id=$(get_window_id)
 
 if [[ -z "${window_id}" ]]; then
-  i3-msg "workspace ${workspace_name}; exec ${execute_cmd};"
+  i3-msg "workspace \"${workspace_name}\";"
+  i3-msg "exec --no-startup-id ${execute_cmd};"
+  for i in $(seq 10); do
+    # Some programs (looking at you chromium), ends up at another workspace
+    # then what we set first and start them in. Looks like this is a common
+    # problem with some apps. Solution; start them, and look after them till
+    # we find them. Then move them to the correct workspace.
+    # Normally, this loop runs 2-3 iterations.
+    sleep 0.1
+    window_id=$(get_window_id)
+    if [[ ! -z "${window_id}" ]]; then
+      sleep 0.2 # Wait for things to settle
+      i3-msg "[id=${window_id}] move workspace \"${workspace_name}\""
+      break
+    fi
+  done
 else
   i3-msg "[id=$(echo ${window_id})] focus"  # "id" is x11 window id, not i3 window id
 fi
