@@ -5,8 +5,9 @@
 # Speed up the keyboard repeat-rate..
 xset r rate 200 65
 
+# Doesnt look like this is needed anymore (2017-02-05)
 # https://bugzilla.freedesktop.org/show_bug.cgi?id=98897 - Probably fixed in 4.9.x kernel
-sudo sh -c "echo battery > /sys/class/drm/card0/device/power_dpm_state"
+# sudo sh -c "echo battery > /sys/class/drm/card0/device/power_dpm_state"
 
 # Needed on my macbook pro to be able to controll the backlight
 sudo sh -c "setpci -v -H1 -s 00:01.00 BRIDGE_CONTROL=0"
